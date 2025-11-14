@@ -36,14 +36,38 @@ function BalanceReducer(state = initialBalanceState, action) {
 
 const store = createStore(BalanceReducer);
 
-store.dispatch({ type: "account/deposit", payload: 5000 }); // we dispatch from store !
+store.dispatch(deposit(5000)); // we dispatch from store !
 console.log(store.getState());
 
-store.dispatch({ type: "account/withdraw", payload: 50 });
+store.dispatch(withdraw(50));
 console.log(store.getState());
 
-store.dispatch({
-  type: "account/requestLoan",
-  payload: { amount: 2000, loanPurpose: "buy a car" },
-});
+store.dispatch(requestLoan(2000, "bay a car"));
 console.log(store.getState());
+
+store.dispatch(payLoan());
+console.log(store.getState());
+
+// we define Action Function for every action type , this a convention not a rule in redux
+
+// some old developer were used to declare a const for the type name instead of declaring it with string , and use it in action & reducer function
+// const ACCOUNT_DEPOSIT = "account/deposit"
+
+function deposit(amount) {
+  return { type: "account/deposit", payload: amount };
+}
+
+function withdraw(amount) {
+  return { type: "account/withdraw", payload: amount };
+}
+
+function requestLoan(amount, loanPurpose) {
+  return {
+    type: "account/requestLoan",
+    payload: { amount, loanPurpose },
+  };
+}
+
+function payLoan() {
+  return { type: "account/payLoan" };
+}
