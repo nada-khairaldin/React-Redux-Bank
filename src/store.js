@@ -1,9 +1,15 @@
-import { createStore } from "redux";
+import { combineReducers, createStore } from "redux";
 
 const initialBalanceState = {
   balance: 0,
   loan: 0,
   loanPurpose: "",
+};
+
+const initialCustomerState = {
+  fullName: "",
+  nationalID: "",
+  createdAt: "",
 };
 
 // usually with reducer we assign initial value for state
@@ -34,7 +40,32 @@ function BalanceReducer(state = initialBalanceState, action) {
   }
 }
 
-const store = createStore(BalanceReducer);
+function CustomerReducer(state = initialCustomerState, action) {
+  switch (action.type) {
+    case "customer/createCustomer":
+      return {
+        ...state,
+        fullName: action.payload.fullName,
+        nationalID: action.payload.nationalID,
+        createdAt: action.payload.createdAt,
+      };
+    case "customer/updateName":
+      return {
+        ...state,
+        fullName: action.payload,
+      };
+    default:
+      return state;
+  }
+}
+
+const rootReducer = combineReducers({
+  BalanceReducer,
+  CustomerReducer,
+});
+
+// store takes one combining reducer as a root
+const store = createStore(rootReducer);
 
 store.dispatch(deposit(5000)); // we dispatch from store !
 console.log(store.getState());
@@ -46,6 +77,9 @@ store.dispatch(requestLoan(2000, "bay a car"));
 console.log(store.getState());
 
 store.dispatch(payLoan());
+console.log(store.getState());
+
+store.dispatch(createCustomer("nada khairaldin", "66666"));
 console.log(store.getState());
 
 // we define Action Function for every action type , this a convention not a rule in redux
@@ -70,4 +104,17 @@ function requestLoan(amount, loanPurpose) {
 
 function payLoan() {
   return { type: "account/payLoan" };
+}
+
+// we named the action creator with the same name of the event in the action type
+function createCustomer(fullName, nationalID) {
+  return {
+    type: "customer/createCustomer",
+    payload: { fullName, nationalID, createdAt: new Date().toISOString() },
+  };
+  // we gave the date value inside action function (dispatch) not inside reducer , because we should not add any sideEffect to reducer function
+}
+
+function updateName(fullName) {
+  return { type: "customer/updateName", payload: fullName };
 }
