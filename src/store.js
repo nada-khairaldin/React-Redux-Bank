@@ -11,3 +11,11 @@ const rootReducer = combineReducers({
 const store = createStore(rootReducer);
 
 export default store;
+
+/*
+1: how does the store know which reducer to use -> This is based entirely on the action type.
+
+2: Do type names have to be unique? -> This is not a rule. But mostly, yes. Each action has a distinct type name and the corresponding reducer gets invoked.
+
+3: To whom or what does the reducer pass the new state object to, the store or the action? -> The reducer does not pass the new state object anywhere. Basically, it triggers a state change event to all your react components that are listening to it. All components listening to the changed state get re-rendered, with the new version of the state, thereby updating your DOM.
+*/

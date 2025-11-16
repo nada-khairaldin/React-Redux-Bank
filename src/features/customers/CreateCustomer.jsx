@@ -1,10 +1,18 @@
 import { useState } from "react";
+import { createCustomer } from "./customerSlice";
+import { useDispatch } from "react-redux";
 
 function Customer() {
   const [fullName, setFullName] = useState("");
   const [nationalId, setNationalId] = useState("");
 
-  function handleClick() {}
+  const dispatch = useDispatch(); // a redux function to dispatch without using store
+
+  function handleClick() {
+    if (!fullName && !nationalId) return;
+    // 3- we use useDispatch with action function if we need to handle a change in the store
+    dispatch(createCustomer(fullName, nationalId));
+  }
 
   return (
     <div>
