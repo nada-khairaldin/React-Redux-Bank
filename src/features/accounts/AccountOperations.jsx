@@ -17,9 +17,9 @@ function AccountOperations() {
   } = useSelector((store) => store.account);
   function handleDeposit() {
     if (!depositAmount) return;
-    dispatch(deposit(depositAmount, currency));
+    dispatch(deposit(depositAmount));
     setDepositAmount("");
-    setCurrency("USD");
+  //   setCurrency("USD");
   }
 
   function handleWithdrawal() {
@@ -94,7 +94,7 @@ function AccountOperations() {
         {currentLoan > 0 && (
           <div>
             <span>
-              Pay back {currentLoan}({currentLoanPurpose})
+            Pay back {currentLoan}({currentLoanPurpose})
             </span>
             <button onClick={handlePayLoan}>Pay loan</button>
           </div>
