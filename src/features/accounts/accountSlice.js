@@ -32,6 +32,7 @@ const accountSlice = createSlice({
         if (state.loan > 0) return;
         state.loan = action.payload.amount;
         state.loanPurpose = action.payload.loanPurpose;
+        state.balance += action.payload.amount;
       },
     },
 
@@ -41,10 +42,37 @@ const accountSlice = createSlice({
       state.loan = 0;
       state.loanPurpose = "";
     },
+    convertingCurrency(state) {
+      state.isLoading = true;
+    },
   },
 });
 
-export const { deposit, withdraw, requestLoan, payLoan } = accountSlice.actions;
+export const { withdraw, requestLoan, payLoan } = accountSlice.actions;
+
+// we delete the exported deposit action , as we need to rely in our own deposit action creator
+
+/* we used the action creator function for fetching api , it didn't require any thunk setUp, as thunk is installing automatically with RTK
+we could use a build in function in RTK , called createAsyncThunk but no need for more work */
+
+export function deposit(amount, currency) {
+  if (currency === "USD")
+    return {
+      type: "account/deposit",
+      payload: amount,
+    }; // we have to ensure type is same as "sliceName/reducerName"
+  else {
+    return async function (dispatch, getState) {
+      dispatch({ type: "account/convertingCurrency" });
+      const res = await fetch(
+        `https://api.frankfurter.app/latest?amount=${amount}from=${currency}&to=USD`
+      );
+      const data = await res.json();
+      const converted = data.rates.USD;
+      dispatch({ type: "account/deposit", payload: converted });
+    };
+  }
+}
 
 export default accountSlice.reducer;
 
