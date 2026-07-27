@@ -1,16 +1,28 @@
-# React + Vite
+### Bank Account Simulator — Redux State Management
+**Tech:** React, Redux Toolkit, Redux Thunk, Redux DevTools
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Key Concepts:** Classic Redux vs. Redux Toolkit, async action creators 
+(thunks), slice pattern, prepare callbacks, third-party API integration
 
-Currently, two official plugins are available:
+A simulated banking dashboard for deposits, withdrawals, loans, and 
+customer accounts — built first with classic Redux, then refactored to 
+Redux Toolkit to compare both approaches directly.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+**Highlights:**
+- Implemented the same state logic twice: once with classic Redux 
+  (`combineReducers`, `applyMiddleware`, manual thunk setup) and once 
+  with Redux Toolkit (`configureStore`, `createSlice`), to understand 
+  what RTK abstracts away
+- Built an async thunk action creator that converts currency via a live 
+  exchange rate API before dispatching a deposit
+- Used the `prepare` callback pattern to handle actions requiring 
+  multiple arguments or derived data (e.g., auto-generating a timestamp 
+  on customer creation)
 
-## React Compiler
+**What I learned:** Redux Toolkit's `createSlice` uses Immer internally, 
+which is why state can be "mutated" directly inside reducers without 
+breaking Redux's immutability rules — a distinction that only makes 
+sense after seeing the manual, non-RTK version first.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+**Future Enhancements:** Replace the manual thunk with `createAsyncThunk` 
+to get built-in loading/error state handling for the currency conversion call.
